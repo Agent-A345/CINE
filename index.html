@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CINE — Custom Player</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- App Shell -->
+  <div class="app">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo">
+        <span class="logo-icon"><i class="fa-solid fa-film"></i></span>
+        <span class="logo-text">CINE</span>
+      </div>
+      <div class="header-right">
+        <button class="theme-btn" id="themeToggle" title="Toggle theme">
+          <i class="fa-solid fa-circle-half-stroke"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Layout -->
+    <main class="app-main">
+
+      <!-- Player Section -->
+      <section class="player-section">
+
+        <!-- Video Container -->
+        <div class="player-wrap" id="playerWrap">
+
+          <!-- Video Element -->
+          <video id="mainVideo" preload="metadata">
+            <track id="subtitleTrack" kind="subtitles" srclang="en" label="English" />
+          </video>
+
+          <!-- Overlay: center play/pause flash -->
+          <div class="play-flash" id="playFlash">
+            <i class="fa-solid fa-play" id="playFlashIcon"></i>
+          </div>
+
+          <!-- Gradient overlay for controls -->
+          <div class="controls-gradient"></div>
+
+          <!-- Buffering Spinner -->
+          <div class="buffer-spinner" id="bufferSpinner">
+            <div class="spinner-ring"></div>
+          </div>
+
+          <!-- Seek Tooltip -->
+          <div class="seek-tooltip" id="seekTooltip">
+            <span class="tooltip-time" id="tooltipTime">0:00</span>
+            <div class="tooltip-thumb" id="tooltipThumb"></div>
+          </div>
+
+          <!-- Controls Bar -->
+          <div class="controls" id="controls">
+
+            <!-- Progress Bar -->
+            <div class="progress-area">
+              <div class="progress-track" id="progressTrack">
+                <div class="progress-buffer" id="progressBuffer"></div>
+                <div class="progress-fill" id="progressFill"></div>
+                <div class="progress-thumb" id="progressThumb"></div>
+              </div>
+            </div>
+
+            <!-- Button Row -->
+            <div class="controls-row">
+
+              <!-- Left controls -->
+              <div class="controls-left">
+                <button class="ctrl-btn" id="playPauseBtn" title="Play/Pause (Space)">
+                  <i class="fa-solid fa-play" id="playIcon"></i>
+                </button>
+                <button class="ctrl-btn" id="rewindBtn" title="Rewind 10s (←)">
+                  <i class="fa-solid fa-rotate-left"></i>
+                  <span class="btn-label">10</span>
+                </button>
+                <button class="ctrl-btn" id="forwardBtn" title="Forward 10s (→)">
+                  <i class="fa-solid fa-rotate-right"></i>
+                  <span class="btn-label">10</span>
+                </button>
+                <button class="ctrl-btn" id="restartBtn" title="Restart">
+                  <i class="fa-solid fa-backward-step"></i>
+                </button>
+
+                <!-- Volume -->
+                <div class="volume-group">
+                  <button class="ctrl-btn" id="muteBtn" title="Mute/Unmute (↑↓)">
+                    <i class="fa-solid fa-volume-high" id="volIcon"></i>
+                  </button>
+                  <div class="volume-slider-wrap">
+                    <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.02" value="1" />
+                  </div>
+                </div>
+
+                <!-- Time Display -->
+                <div class="time-display">
+                  <span id="currentTime">0:00</span>
+                  <span class="time-sep">/</span>
+                  <span id="totalDuration">0:00</span>
+                </div>
+              </div>
+
+              <!-- Right controls -->
+              <div class="controls-right">
+
+                <!-- Skip Intro -->
+                <button class="ctrl-btn pill-btn" id="skipIntroBtn" title="Skip Intro (+60s)">
+                  <i class="fa-solid fa-forward-fast"></i> Skip Intro
+                </button>
+
+                <!-- Subtitles -->
+                <button class="ctrl-btn" id="subtitleBtn" title="Toggle Subtitles">
+                  <i class="fa-solid fa-closed-captioning"></i>
+                </button>
+
+                <!-- Speed -->
+                <div class="speed-group">
+                  <button class="ctrl-btn speed-current" id="speedBtn" title="Playback Speed">
+                    <span id="speedDisplay">1×</span>
+                  </button>
+                  <div class="speed-menu" id="speedMenu">
+                    <button class="speed-opt" data-speed="0.5">0.5×</button>
+                    <button class="speed-opt" data-speed="0.75">0.75×</button>
+                    <button class="speed-opt active" data-speed="1">1×</button>
+                    <button class="speed-opt" data-speed="1.25">1.25×</button>
+                    <button class="speed-opt" data-speed="1.5">1.5×</button>
+                    <button class="speed-opt" data-speed="2">2×</button>
+                  </div>
+                </div>
+
+                <!-- PiP -->
+                <button class="ctrl-btn" id="pipBtn" title="Picture in Picture">
+                  <i class="fa-solid fa-window-restore"></i>
+                </button>
+
+                <!-- Fullscreen -->
+                <button class="ctrl-btn" id="fullscreenBtn" title="Fullscreen (F)">
+                  <i class="fa-solid fa-expand" id="fullscreenIcon"></i>
+                </button>
+              </div>
+            </div>
+          </div><!-- /controls -->
+
+          <!-- Video Title Overlay (top-left) -->
+          <div class="video-title-overlay" id="videoTitleOverlay">
+            <span id="nowPlayingLabel">Now Playing</span>
+            <h2 id="videoTitleText">—</h2>
+          </div>
+
+        </div><!-- /player-wrap -->
+
+        <!-- Jump to Key Moments -->
+        <div class="keymoments">
+          <span class="keymoments-label">Jump to</span>
+          <div class="keymoments-list" id="keyMomentsList"></div>
+        </div>
+
+      </section><!-- /player-section -->
+
+      <!-- Sidebar -->
+      <aside class="sidebar">
+
+        <!-- Subtitle Settings -->
+        <div class="sidebar-card" id="subtitleCard">
+          <div class="sidebar-card-header">
+            <i class="fa-solid fa-closed-captioning"></i> Subtitles
+          </div>
+          <div class="sidebar-card-body">
+            <label class="toggle-row">
+              <span>Show Subtitles</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="subtitleToggle" />
+                <span class="toggle-slider"></span>
+              </label>
+            </label>
+          </div>
+        </div>
+
+        <!-- Playlist -->
+        <div class="sidebar-card">
+          <div class="sidebar-card-header">
+            <i class="fa-solid fa-list"></i> Playlist
+          </div>
+          <ul class="playlist" id="playlist"></ul>
+        </div>
+
+      </aside>
+
+    </main>
+  </div><!-- /app -->
+
+  <script src="script.js"></script>
+</body>
+</html>
